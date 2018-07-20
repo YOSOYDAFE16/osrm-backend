@@ -248,13 +248,13 @@ Feature: Basic Map Matching
         When I match I should get
             | trace | matchings | a:duration      |
             | abeh  | abeh      | 1:0,1:1:1,0:2:1 |
-            | abci  | abci      | 1:0,1,0:1       |
+            | abci  | abci      | 1:0,1,0:1:0     |
 
         # The following is the same as the above, but separated for readability (line length)
         When I match I should get
             | trace | matchings | a:nodes               |
             | abeh  | abeh      | 1:2:3,2:3:4:5,4:5:6:7 |
-            | abci  | abci      | 1:2:3,2:3,2:3:8       |
+            | abci  | abci      | 1:2:3,2:3,2:3:8:3     |
 
     Scenario: Testbot - Regression test for #3037
         Given the query options
@@ -356,7 +356,7 @@ Feature: Basic Map Matching
 
         When I match I should get
             | trace  | matchings | alternatives         |
-            | abcdef | abcde     | 0,0,0,0,1,1          |
+            | abcdef | abcde     | 0,0,0,1,1,1          |
 
     Scenario: Testbot - Speed greater than speed threshold
         Given a grid size of 100 meters
