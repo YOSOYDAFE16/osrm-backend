@@ -97,6 +97,9 @@ void adjustPathDistanceToPhantomNodes(const std::vector<NodeID> &path,
             distance = target_phantom.GetReverseDistance() - source_phantom.GetReverseDistance();
         }
     }
+
+    // guard against underflow errors caused by rounding
+    distance = std::max<EdgeDistance>(0.0f, distance);
 }
 
 } // namespace routing_algorithms
