@@ -391,21 +391,27 @@ UnpackedPath search(SearchEngineData<Algorithm> &engine_working_data,
                     EdgeWeight weight_upper_bound,
                     Args... args)
 {
-    if (forward_heap.Empty() || reverse_heap.Empty())
+    if (forward_heap.Empty() && reverse_heap.Empty())
     {
         return std::make_tuple(INVALID_EDGE_WEIGHT, std::vector<NodeID>(), std::vector<EdgeID>());
     }
 
     const auto &partition = facade.GetMultiLevelPartition();
 
-    BOOST_ASSERT(!forward_heap.Empty() && forward_heap.MinKey() < INVALID_EDGE_WEIGHT);
-    BOOST_ASSERT(!reverse_heap.Empty() && reverse_heap.MinKey() < INVALID_EDGE_WEIGHT);
+    BOOST_ASSERT(forward_heap.Empty() || forward_heap.MinKey() < INVALID_EDGE_WEIGHT);
+    BOOST_ASSERT(reverse_heap.Empty() || reverse_heap.MinKey() < INVALID_EDGE_WEIGHT);
 
     // run two-Target Dijkstra routing step.
     NodeID middle = SPECIAL_NODEID;
     EdgeWeight weight = weight_upper_bound;
-    EdgeWeight forward_heap_min = forward_heap.MinKey();
-    EdgeWeight reverse_heap_min = reverse_heap.MinKey();
+
+    EdgeWeight forward_heap_min = 0;
+    if (!forward_heap.Empty())
+        forward_heap_min = forward_heap.MinKey();
+    EdgeWeight reverse_heap_min = 0;
+    if (!reverse_heap.Empty())
+        reverse_heap_min = reverse_heap.MinKey();
+
     while (forward_heap.Size() + reverse_heap.Size() > 0 &&
            forward_heap_min + reverse_heap_min < weight)
     {
@@ -689,7 +695,7 @@ double getNetworkDistance(SearchEngineData<Algorithm> &engine_working_data,
     adjustPathDistanceToPhantomNodes(
         unpacked_nodes, phantom_nodes.source_phantom, phantom_nodes.target_phantom, distance);
 
-    return distance / 10.;
+    return distance;
 }
 
 } // namespace mld
